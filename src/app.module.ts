@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { WeatherService } from './weather/weather.service';
 import { WeatherController } from './weather/weather.controller';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [],
+  imports: [CacheModule.register()],
   controllers: [AppController, WeatherController],
   providers: [AppService, WeatherService],
 })
