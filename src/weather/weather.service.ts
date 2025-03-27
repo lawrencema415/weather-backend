@@ -143,7 +143,9 @@ export class WeatherService {
         this.logger.error(`Axios error for ${city}: ${error.message}`);
         if (error.response) {
           this.logger.error(`Response status: ${error.response.status}`);
-          this.logger.error(`Response data: ${JSON.stringify(error.response.data)}`);
+          this.logger.error(
+            `Response data: ${JSON.stringify(error.response.data)}`,
+          );
         }
       } else {
         this.logger.error(`Error fetching weather for ${city}:`, error);
@@ -152,21 +154,28 @@ export class WeatherService {
       if (!this.API_KEY) {
         throw new HttpException(
           'Weather API key not configured',
-          HttpStatus.INTERNAL_SERVER_ERROR
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      throw new HttpException('City not found or service unavailable', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'City not found or service unavailable',
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
   // Add a method to check cache status
-  async checkCacheStatus(city: string): Promise<{ isCached: boolean; ttl?: number }> {
+  async checkCacheStatus(
+    city: string,
+  ): Promise<{ isCached: boolean; ttl?: number; requestsRemaining?: number }> {
     const cacheKey = `weather:${city.toLowerCase()}`;
     const cachedData = await this.cacheManager.get<WeatherData>(cacheKey);
-    // Some cache managers support TTL retrieval, but it's implementation-specific
     // This is a simplified version
+    // We could track remaining requests in a real implementation
+    // For now, we'll just return a placeholder
     return {
       isCached: !!cachedData,
+      requestsRemaining: 5, // Placeholder - in a real implementation, this would be dynamic
     };
   }
 }
